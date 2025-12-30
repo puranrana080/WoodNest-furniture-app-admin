@@ -46,7 +46,7 @@ const Products = () => {
       !form.description ||
       !form.stock
     )
-      return alert("Required fields missing");
+         return toast.error("Required Fields Missing")
 
     try {
       const token = localStorage.getItem("adminToken");
@@ -70,33 +70,85 @@ const Products = () => {
       resetForm();
       toast.success(" Product created successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create product");
+      toast.error(err.response?.data?.message || "Failed to create product")
     }
   };
 
   /* edit product*/
   const handleEdit = (product) => {
+    if (!window.confirm("Edit this product?")) return;
     setEditing(product._id);
     setForm({
-      ...product,
-    });
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    category: product.category,
+    image: product.image,
+    stock: product.stock,
+  });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   /* update Product */
-  const handleUpdate = () => {
-    setProducts(
-      products.map((p) => (p.id === editing ? { ...form, id: editing } : p))
+  const handleUpdate =async () => {
+     if (
+      !form.name ||
+      !form.price ||
+      !form.category ||
+      !form.description ||
+      !form.stock
+    )
+      return toast.error("Required Fields Missing")
+    try{
+      const token = localStorage.getItem('adminToken')
+      const res = await axios.put(`http://localhost:3000/api/admin/update-product/${editing}`,{
+        name: form.name,
+        description: form.description,
+        price: Number(form.price),
+        category: form.category,
+        image: form.image,
+        stock: Number(form.stock),
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+       setProducts(
+      products.map((p) => (p._id === editing ? res.data : p))
     );
+
     setEditing(null);
     resetForm();
-    toast.success(" Product Updated successfully!");
+    toast.success("Product updated successfully!");
+    }
+    catch(err){
+       toast.error(err.response?.data?.message || "Update failed");
+    }
   };
 
   /* delete product*/
-  const handleDelete = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
-    toast.success(" Product Deleted successfully!");
+  const handleDelete = async(id) => {
+     if (!window.confirm("Delete this product?")) return;
+
+
+     try{
+      const token = localStorage.getItem('adminToken')
+
+      await axios.delete(`http://localhost:3000/api/admin/delete-product/${id}`,
+        {
+          headers:
+          {
+            Authorization:`Bearer ${token}`
+          }
+        }
+      );
+      setProducts(products.filter((p) => p._id !== id));
+      toast.success("Product Deleted successfully!");
+     }
+     catch(err){
+      toast.error(err.response?.data?.message || "Delete failed");
+     }
   };
 
   const resetForm = () => {
