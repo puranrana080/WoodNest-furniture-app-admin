@@ -257,7 +257,7 @@ const Products = () => {
           >
             <div className="flex items-center gap-4">
               <img
-                src={product.image || "https://via.placeholder.com/80"}
+                src={product.image  || "https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="}
                 alt={product.name}
                 className="w-20 h-20 object-cover rounded border"
               />
@@ -265,7 +265,7 @@ const Products = () => {
                 <h3 className="font-bold text-lg">{product.name}</h3>
                 {/* <p>{product.description}</p> */}
                 <p className="text-sm text-gray-600">
-                  ₹{product.price} | {product.category} | Stock: {product.stock}
+                  ₹{product.price} | {product.category} 
                 </p>
                 <p className="text-sm">Stock: {product.stock}</p>
               </div>
